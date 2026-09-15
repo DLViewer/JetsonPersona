@@ -298,7 +298,41 @@ Input:
 
 LLM output:
 
-{
+### Current Implementation
+
+JetsonPersona currently uses `llama.cpp` as the local LLM inference runtime.
+
+#### Upstream Project
+
+- Project: `llama.cpp`
+- Repository: https://github.com/ggml-org/llama.cpp
+- Integrated as a Git submodule:
+  `external/llama.cpp`
+
+#### Tested Configuration
+
+- Platform: NVIDIA Jetson Orin Nano
+- CUDA: 12.6
+- llama.cpp build: 10968
+- Model: Qwen2.5-1.5B-Instruct-GGUF
+- Quantization: Q4_K_M
+- Context size: 2048
+- GPU layers: 10
+
+#### Current Test Flow
+
+```text
+Keyboard Input
+      ↓
+Python test program
+      ↓
+llama-server
+      ↓
+Qwen2.5 1.5B Instruct
+      ↓
+JSON response
+      ↓
+Terminal Output{
     "intent": "introduce_person",
     "name": "Peter"
 }
