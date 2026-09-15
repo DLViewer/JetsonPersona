@@ -351,6 +351,7 @@ JSON response
       ↓
 Terminal Output
 ```
+
 ---
 
 ## 9. Text-to-Speech
