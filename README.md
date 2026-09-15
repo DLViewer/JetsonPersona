@@ -271,8 +271,9 @@ Potential implementations include:
 
 For an embedded implementation, lightweight or quantised models are preferred.
 
----markdown
+---
 
+```markdown
 ## 8. Large Language Model
 
 The LLM handles natural-language interpretation and conversation.
