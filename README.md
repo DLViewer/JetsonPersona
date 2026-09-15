@@ -297,6 +297,23 @@ Input:
 "My name is Peter."
 
 LLM output:
+{
+    "intent": "introduce_person",
+    "name": "Peter"
+}
+```
+
+JetsonPersona can initially use a relatively small local instruct model.
+
+Possible runtime systems include:
+
+* llama.cpp
+* Ollama-compatible backends
+* TensorRT-LLM
+* Jetson Containers
+* NVIDIA optimised LLM frameworks
+
+A small quantised model is preferred for Jetson Orin Nano.
 
 ### Current Implementation
 
@@ -332,23 +349,7 @@ Qwen2.5 1.5B Instruct
       ↓
 JSON response
       ↓
-Terminal Output{
-    "intent": "introduce_person",
-    "name": "Peter"
-}
-```
-
-JetsonPersona can initially use a relatively small local instruct model.
-
-Possible runtime systems include:
-
-* llama.cpp
-* Ollama-compatible backends
-* TensorRT-LLM
-* Jetson Containers
-* NVIDIA optimised LLM frameworks
-
-A small quantised model is preferred for Jetson Orin Nano.
+Terminal Output
 
 ---
 
@@ -364,7 +365,6 @@ Text:
 "Hello Peter. Nice to see you again."
 
         ↓
-
 Text-to-Speech
 
         ↓
