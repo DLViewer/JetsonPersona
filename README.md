@@ -273,7 +273,6 @@ For an embedded implementation, lightweight or quantised models are preferred.
 
 ---
 
-```markdown
 ## 8. Large Language Model
 
 The LLM handles natural-language interpretation and conversation.
@@ -316,6 +315,7 @@ Possible runtime systems include:
 
 A small quantised model is preferred for Jetson Orin Nano.
 
+```markdown
 ### Current Implementation
 
 JetsonPersona currently uses `llama.cpp` as the local LLM inference runtime.
