@@ -271,7 +271,7 @@ Potential implementations include:
 
 For an embedded implementation, lightweight or quantised models are preferred.
 
----
+---markdown
 
 ## 8. Large Language Model
 
