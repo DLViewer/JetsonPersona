@@ -315,7 +315,6 @@ Possible runtime systems include:
 
 A small quantised model is preferred for Jetson Orin Nano.
 
-```markdown
 ### Current Implementation
 
 JetsonPersona currently uses `llama.cpp` as the local LLM inference runtime.
@@ -351,7 +350,6 @@ Qwen2.5 1.5B Instruct
 JSON response
       ↓
 Terminal Output
-```
 
 ---
 
