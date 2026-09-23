@@ -21,10 +21,12 @@ class WhisperCppSTT:
         executable: str | Path,
         model: str | Path,
         language: str = "auto",
+        use_gpu: bool = True,
     ) -> None:
         self.executable = Path(executable)
         self.model = Path(model)
         self.language = language
+        self.use_gpu = use_gpu
 
     def validate(self) -> None:
         """Check that whisper.cpp executable and model exist."""
@@ -44,26 +46,7 @@ class WhisperCppSTT:
         audio_file: str | Path,
         language: str | None = None,
     ) -> str:
-        """
-        Transcribe an audio file.
-
-        Parameters
-        ----------
-        audio_file:
-            Input WAV/audio file.
-
-        language:
-            Optional language override.
-            Examples:
-                "auto"
-                "en"
-                "zh"
-
-        Returns
-        -------
-        str
-            Recognised text.
-        """
+        """Transcribe an audio file and return recognised text."""
 
         audio_file = Path(audio_file)
 
@@ -87,6 +70,9 @@ class WhisperCppSTT:
             "--no-timestamps",
         ]
 
+        if not self.use_gpu:
+            command.append("--no-gpu")
+
         try:
             result = subprocess.run(
                 command,
@@ -94,6 +80,7 @@ class WhisperCppSTT:
                 text=True,
                 check=True,
             )
+
         except subprocess.CalledProcessError as exc:
             raise SpeechToTextError(
                 f"whisper.cpp failed:\n{exc.stderr}"
