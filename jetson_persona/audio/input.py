@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-
+import subprocess
 
 class AudioInput(ABC):
     """Base interface for JetsonPersona audio input."""
@@ -34,26 +34,72 @@ class FileAudioInput(AudioInput):
 
         return self.audio_file
 
-
 class USBMicrophoneInput(AudioInput):
     """
-    USB microphone input.
+    USB microphone input using ALSA arecord.
 
-    Hardware implementation will be completed/tested
-    when the USB audio device is available.
+    Default device:
+        AB17X USB Audio
+
+    Recording format:
+        16 kHz
+        mono
+        signed 16-bit PCM WAV
+
+    This format is suitable for whisper.cpp.
     """
 
     def __init__(
         self,
-        device=None,
+        device: str = "plughw:CARD=Audio,DEV=0",
         sample_rate: int = 16000,
         channels: int = 1,
+        duration: int = 5,
+        output_file: str | Path = "recording.wav",
     ) -> None:
         self.device = device
         self.sample_rate = sample_rate
         self.channels = channels
+        self.duration = duration
+        self.output_file = Path(output_file)
 
     def record(self) -> Path:
-        raise NotImplementedError(
-            "USB microphone recording is not enabled yet."
-        )
+        command = [
+            "arecord",
+            "-D",
+            self.device,
+            "-f",
+            "S16_LE",
+            "-r",
+            str(self.sample_rate),
+            "-c",
+            str(self.channels),
+            "-d",
+            str(self.duration),
+            str(self.output_file),
+        ]
+
+        try:
+            subprocess.run(
+                command,
+                check=True,
+            )
+
+        except FileNotFoundError as exc:
+            raise RuntimeError(
+                "arecord is not installed."
+            ) from exc
+
+        except subprocess.CalledProcessError as exc:
+            raise RuntimeError(
+                f"Audio recording failed with exit code "
+                f"{exc.returncode}"
+            ) from exc
+
+        if not self.output_file.is_file():
+            raise RuntimeError(
+                f"Recording file was not created: "
+                f"{self.output_file}"
+            )
+
+        return self.output_file

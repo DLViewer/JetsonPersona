@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-
+import subprocess
 
 class AudioOutput(ABC):
     """Base interface for JetsonPersona audio output."""
@@ -36,16 +36,46 @@ class FileAudioOutput(AudioOutput):
 
 class USBAudioOutput(AudioOutput):
     """
-    Placeholder for future USB speaker/headphone support.
+    USB speaker/headphone output using ALSA aplay.
 
-    Hardware implementation will be completed and tested
-    when the USB audio device is available.
+    Default device:
+        AB17X USB Audio
     """
 
-    def __init__(self, device: str | int | None = None) -> None:
+    def __init__(
+        self,
+        device: str = "plughw:CARD=Audio,DEV=0",
+    ) -> None:
         self.device = device
 
     def play(self, audio_file: str | Path) -> None:
-        raise NotImplementedError(
-            "USB audio playback is not implemented yet."
-        )
+        audio_file = Path(audio_file)
+
+        if not audio_file.is_file():
+            raise FileNotFoundError(
+                f"Audio output file not found: {audio_file}"
+            )
+
+        command = [
+            "aplay",
+            "-D",
+            self.device,
+            str(audio_file),
+        ]
+
+        try:
+            subprocess.run(
+                command,
+                check=True,
+            )
+
+        except FileNotFoundError as exc:
+            raise RuntimeError(
+                "aplay is not installed."
+            ) from exc
+
+        except subprocess.CalledProcessError as exc:
+            raise RuntimeError(
+                f"Audio playback failed with exit code "
+                f"{exc.returncode}"
+            ) from exc
