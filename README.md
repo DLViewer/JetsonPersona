@@ -878,25 +878,46 @@ JetsonPersona responds:
 
 # Project Status
 
-**Status: Initial Architecture / Prototype Development**
+**Status: Prototype development — local LLM and basic speech pipeline demonstrated; vision and real-time conversation in progress.**
 
-Current target:
+_Last documentation update: 2026-10-08._
+
+This section distinguishes **demonstrated functionality** from **planned functionality**. The design examples and roadmap elsewhere in this README describe target behaviour, not necessarily implemented features. In particular, the public repository currently contains the architectural README rather than the full Jetson source tree; the test results below are development milestones reported from the device, not reproducible CI results from this repository.
+
+| Capability | Status | Development evidence / next step |
+| --- | --- | --- |
+| Jetson Orin Nano environment | Configured | Ubuntu 22.04.5, Jetson Linux R36.4.7, CUDA 12.6; NVMe root filesystem. |
+| Local LLM inference | **Demonstrated** | Qwen2.5-1.5B-Instruct Q4_K_M using `llama.cpp`; command-line inference, llama-server HTTP requests, and Python requests tested successfully. |
+| Microphone capture and speech-to-text | **Demonstrated in a fixed-duration test** | Five-second WAV recording transcribed successfully in the development environment. |
+| LLM response and spoken output | **Demonstrated in a sequential end-to-end test** | Speech transcription → local LLM response → TTS synthesis → WAV playback tested successfully using `python3 -m tests.test_voice_assistant`. |
+| Real-time conversational voice interface | **In development** | Replace fixed-duration, sequential record/process/play interaction with voice activity detection, streaming or low-latency processing, conversational turn management, and optional barge-in. No full-duplex/continuous real-time demonstration is claimed yet. |
+| Face detection and recognition | **In development** | Modular camera/detector/recogniser pipeline planned; start with the **left sensor** of the Waveshare IMX219-83 stereo camera. No validated identity-recognition result is claimed yet. |
+| Person identity enrolment and persistent matching | **Planned** | Register a name and face embedding with appropriate confidence thresholds, consent, and deletion controls. |
+| Stereo depth and liveness | **Future phase** | Retain the second camera sensor for later stereo/depth applications; not required for the initial single-camera face-recognition prototype. |
+| Combined face-aware voice greeting | **Planned integration** | Once vision and voice components are validated, connect known/unknown person events to the dialogue workflow. |
+
+### Verified development example (sequential voice test)
 
 ```text
-Jetson Orin Nano
-+
-Stereo Camera
-+
-NVMe SSD
-+
-Microphone
-+
-Speaker
-+
-Python
+Speak for 5 seconds...
+You: Hello, hello, this is only five seconds.
+JetsonPersona: Hello! How can I assist you today?
+Synthesizing speech...
+Speaking...
+Done.
 ```
 
-Initial development will focus on establishing reliable face detection and face recognition before adding the complete voice and LLM interaction pipeline.
+This confirms a working **turn-based prototype**, not simultaneous listening and speaking.
+
+### Next development priorities
+
+1. Implement and benchmark single-camera face detection and embedding-based face recognition on the IMX219-83 left sensor.
+2. Add enrolment and persistent local identity storage with confidence and privacy controls.
+3. Introduce voice activity detection and continuous conversational turn handling; test latency and interruption behaviour.
+4. Integrate person recognition with speech greetings and natural name enrolment.
+5. Expand to bilingual English/Cantonese speech interaction and optionally stereo-depth capabilities.
+
+Update this status table when a milestone has been tested. Prefer linking committed source, reproducible test commands, performance measurements, and hardware configurations rather than marking roadmap intentions as completed.
 
 ---
 
